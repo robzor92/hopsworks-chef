@@ -572,6 +572,14 @@ template "#{theDomain}/bin/tfserving-kill.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/tfserving-kill.sh" do
+  source "tfserving-kill.sh.erb"
+  owner node['glassfish']['user']
+  group node['tfserving']['group']
+  mode "550"
+  action :create
+end
+
 command=""
 case node['platform']
  when 'debian', 'ubuntu'
