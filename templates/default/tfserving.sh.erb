@@ -113,6 +113,13 @@ elif [ "$1" == "killhard" ] ; then
     fi
     echo "Trying to 'kill -9' tensorflow_model_server with PID: $2"
     sudo kill -9 $2 2>&1 > /dev/null
+
+# get Logs for serving
+elif [ "$1" == "logs" ] ; then
+    HOST=$2
+    LOGFILE=$3
+
+    cat ${LOGFILE}
 else
   help
 fi
