@@ -51,10 +51,10 @@ elif [ "$1" == "start" ] ; then
     fi
 
     which tensorflow_model_server
-    if [ $? -ne 0 ]
-    then
-    echo "Could not find tensorflow_model_server command"
+    if [ $? -ne 0 ] ; then
+        echo "Could not find tensorflow_model_server command"
         exit 1
+    fi
 
     # Sanity checks for injection attacks
     re='^[0-9]+$'
