@@ -18,7 +18,7 @@ cookbook 'tensorflow', github: "hopshadoop/tensorflow-chef", branch: "master"
 cookbook 'epipe', github: "hopshadoop/epipe-chef", branch: "master"
 cookbook 'dela', github: "hopshadoop/dela-chef", branch: "master"
 
-cookbook 'kzookeeper', github: "hopshadoop/kzookeeper", branch: "master"
+cookbook 'kzookeeper', github: "robzor92/kzookeeper", branch: "Fix"
 cookbook 'kkafka', github: "hopshadoop/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "hopshadoop/elasticsearch-chef", branch: "master"
 
