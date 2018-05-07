@@ -281,6 +281,10 @@ attribute "hopsworks/anaconda_enabled",
           :description => "Default is 'true'. Set to 'false' to disable anaconda.",
           :type => 'string'
 
+attribute "hopsworks/nonconda_hosts",
+          :description => "Comma separated list of IPs on which you should not enable conda.",
+          :type => 'string'
+
 attribute "hopsworks/staging_dir",
           :description => "Default is a 'domains/domain1/scratch'. Override to use a path on a disk volume with plenty of available space.",
           :type => 'string'
@@ -724,6 +728,13 @@ attribute "cuda/accept_nvidia_download_terms",
 :description => "Accept cuda licensing terms and conditions. Default: 'false'. Change to 'true' to enable cuda.",
 :type => "string"
 
+attribute "cuda/skip_test",
+          :description => "Dont check if there is a local nvidia card on this machine",
+          :type => "string"
+
+attribute "cuda/skip_stop_xserver",
+          :description => "Dont restart the xserver (probably a localhost installation)",
+          :type => "string"
 
 ##
 ##
@@ -1483,9 +1494,9 @@ attribute "kagent/dashboard/password",
           :description => "kagent password to register with server",
           :type => "string"
 
-attribute "kagent/env_report_freq_in_secs",
-          :description => "How often the kagent sends a full report of its conda environments for synchronization",
-          :type => "string"
+attribute "kagent/dns",
+          :description => "Default 'false'. Set to 'true' to use fully qualified domain names for kagent hosts in Hopsworks.",
+          :type => 'string'
 
 attribute "ndb/mysql_port",
           :description => "Port for the mysql server",
@@ -1886,6 +1897,9 @@ attribute "hopsworks/hopssite/register_port",
           :description => "Dela hops site port used for cert registration",
           :type => 'string'
 
+attribute "hopsworks/support_email_addr",
+          :description => "Email address to contact for email registration problems",
+          :type => 'string'
 
 attribute "hopsworks/hopssite/heartbeat",
           :description => "Dela hops site heartbeat",
@@ -2180,4 +2194,11 @@ attribute "hopsworks/kafka_num_replicas",
 
 attribute "hopsworks/kafka_num_partitions",
           :description => "Default number of partitions for Kafka Topics.",
+          :type => 'string'
+
+
+### RStudio
+
+attribute "rstudio/enabled",
+          :description => "Set to 'true' to enable RStudio in Hopsworks. Default 'false'.",
           :type => 'string'

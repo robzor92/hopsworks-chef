@@ -44,9 +44,9 @@ when "redhat"
          touch /etc/authbind/byport/443
          chmod 550 /etc/authbind/byport/443
      EOF
-       not_if { ::File.exists?("/usr/bin/authbind") }      
+       not_if { ::File.exists?("/usr/bin/authbind") }
     end
-  end        
+  end
 end
 
 
@@ -100,7 +100,17 @@ group node['tfserving']['group'] do
   members ["#{node['hopsworks']['user']}"]
   append true
 end
+group node['jupyter']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
 
+group node['conda']['group'] do
+  action :modify
+  members ["#{node['hopsworks']['user']}"]
+  append true
+end
 
 # Add to the hdfs superuser group
 group node['hops']['hdfs']['user'] do
@@ -167,7 +177,7 @@ end
 
 case node['platform_family']
 when "debian"
-  
+
   if node['platform_version'].to_f <= 14.04
     node.override['hopsworks']['systemd'] = "false"
   end
@@ -176,7 +186,7 @@ when "debian"
 
 when "rhel"
   package "krb5-libs"
-  
+
   remote_file "#{Chef::Config['file_cache_path']}/dtrx.tar.gz" do
     user node['glassfish']['user']
     group node['glassfish']['group']
@@ -215,7 +225,7 @@ node.override = {
       domain_name => {
         'config' => {
           'systemd_enabled' => systemd,
-          'systemd_start_timeout' => 240,
+          'systemd_start_timeout' => 500,
           'min_memory' => node['glassfish']['min_mem'],
           'max_memory' => node['glassfish']['max_mem'],
           'max_perm_size' => node['glassfish']['max_perm_size'],
@@ -338,7 +348,7 @@ remote_file "#{theDomain}/lib/#{cauth}"  do
   action :create_if_missing
 end
 
-  
+
 
 # If the install.rb recipe failed and is re-run, install_dir needs to reset it
 if node['glassfish']['install_dir'].include?("versions") == false
@@ -414,13 +424,30 @@ if systemd == true
     action :create
   end
 
-  template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
-    source "limits.conf.erb"
-    owner "root"
-    mode 0774
-    action :create
-  end
+  
+   template "/etc/systemd/system/glassfish-#{domain_name}.service.d/limits.conf" do
+     source "limits.conf.erb"
+     owner "root"
+     mode 0774
+     action :create
+   end
 
+ulimit_domain node['hopsworks']['user'] do
+  rule do
+    item :memlock
+    type :soft
+    value "unlimited"
+  end
+  rule do
+    item :memlock
+    type :hard
+    value "unlimited"
+  end
+end
+  
+
+
+  
   hopsworks_grants "reload_systemd" do
     tables_path  ""
     views_path ""
@@ -619,6 +646,14 @@ template "#{theDomain}/bin/anaconda-prepare.sh" do
   action :create
 end
 
+template "#{theDomain}/bin/anaconda-rsync.sh" do
+  source "anaconda-rsync.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode "550"
+  action :create
+end
+
 template "#{theDomain}/bin/kagent-restart.sh" do
   source "kagent-restart.sh.erb"
   owner node['glassfish']['user']
@@ -730,7 +765,7 @@ template "/etc/sudoers.d/glassfish" do
               :delete_projectcert =>  "#{ca_dir}/intermediate/deleteprojectcerts.sh",
               :ndb_backup =>  "#{theDomain}/bin/ndb_backup.sh",
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
-              :tfserving =>  "#{theDomain}/bin/tfserving.sh",              
+              :tfserving =>  "#{theDomain}/bin/tfserving.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
               :global_ca_sign =>  "#{theDomain}/bin/global-ca-sign-csr.sh",
@@ -793,17 +828,14 @@ directory node["jupyter"]["base_dir"]  do
   action :create
 end
 
-case node["platform_family"]
-  when "debian"
-   apt_package "python-openssl" do
-     action :install
-   end
-
-  when "rhel"
-   python_package "pyOpenSSL" do
-     action :install
-   end
+bash "python_openssl" do
+  user "root"
+  code <<-EOF
+    pip install pyopenssl
+    # --upgrade
+  EOF
 end
+
 
 directory node["hopssite"]["certs_dir"] do
   owner node["glassfish"]["user"]
@@ -867,11 +899,6 @@ bash "unpack_flyway" do
   not_if { ::File.exists?("#{theDomain}/flyway/flyway") }
 end
 
-# file "#{theDomain}/flyway/conf/flyway.conf" do
-#   owner "root"
-#   action :delete
-# end
-
 template "#{theDomain}/flyway/conf/flyway.conf" do
   source "flyway.conf.erb"
   owner node['glassfish']['user']
@@ -879,6 +906,13 @@ template "#{theDomain}/flyway/conf/flyway.conf" do
   variables({
               :mysql_host => my_ip
             })
+  action :create
+end
+
+template "#{theDomain}/flyway/flyway-undo.sh" do
+  source "flyway-undo.sh.erb"
+  owner node['glassfish']['user']
+  mode 0750
   action :create  
 end
 
@@ -896,3 +930,19 @@ template "#{theDomain}/flyway/sql/V0.0.2__initial_tables.sql" do
   action :create_if_missing
 end
 
+
+template "#{theDomain}/bin/anaconda-command-ssh.sh" do
+  source "anaconda-command-ssh.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']  
+  mode 0750
+  action :create
+end
+
+template "#{theDomain}/bin/conda-command-ssh.sh" do
+  source "conda-command-ssh.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']  
+  mode 0750
+  action :create
+end

@@ -247,10 +247,14 @@ versions.push(flyway_version)
 condaRepo = 'defaults'
 
 if node['conda']['mirror_list'].empty? == false
-   repos = node['conda']['mirror_list'].split(/\s*,\s*/)   
+   repos = node['conda']['mirror_list'].split(/\s*,\s*/)
    condaRepo = repos[0]
-end  
+end
 
+nonconda_hosts_list = []
+if node['hopsworks']['nonconda_hosts'].empty? == false
+  nonconda_hosts_list = node['hopsworks']['nonconda_hosts'].split(/\s*,\s*/)
+end
 
 for version in versions do
 
@@ -340,7 +344,8 @@ for version in versions do
                 :hivessl_hostname => hiveserver_ip + ":#{node['hive2']['portssl']}",
                 :hiveext_hostname => hiveserver_ip + ":#{node['hive2']['port']}",
                 :hive_warehouse => "#{node['hive2']['hopsfs_dir']}/warehouse",
-                :hive_scratchdir => node['hive2']['scratch_dir']
+                :hive_scratchdir => node['hive2']['scratch_dir'],
+                :nonconda_hosts_list => nonconda_hosts_list
            })
     action :create
   end
@@ -351,7 +356,7 @@ for version in versions do
   #file "#{theDomain}/flyway/undo/U#{previous_version}__undo.sql" do
   #  action :delete
   #end
-  
+
   template "#{theDomain}/flyway/undo/U#{version}__undo.sql" do
     source "sql/undo/#{version}__undo.sql.erb"
     owner node['glassfish']['user']
@@ -414,7 +419,7 @@ hopsworks_grants "reload_sysv" do
 end
 
 
-# if node['install']['upgrade'] == "true" 
+# if node['install']['upgrade'] == "true"
 # end
 
 
@@ -425,7 +430,7 @@ bash "flyway_baseline" do
     cd #{theDomain}/flyway
     #{theDomain}/flyway/flyway baseline
   EOF
- not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"  
+ not_if "#{node['ndb']['scripts_dir']}/mysql-client.sh hopsworks -e 'show tables' | grep flyway_schema_history"
 end
 
 bash "flyway_migrate" do
@@ -876,7 +881,7 @@ glassfish_deployable "hopsworks" do
   secure false
   action :deploy
   async_replication false
-  retries 1  
+  retries 1
   keep_state true
   enabled true
   not_if "#{asadmin} --user #{username} --passwordfile #{admin_pwd}  list-applications --type web | grep -w \"hopsworks-web:#{node['hopsworks']['version']}\""
@@ -888,7 +893,7 @@ glassfish_deployable "hopsworks-ca" do
   target "server"
   url node['hopsworks']['ca_url']
   version node['hopsworks']['version']
-  context_root "/hopsworks-ca"  
+  context_root "/hopsworks-ca"
   domain_name domain_name
   password_file "#{domains_dir}/#{domain_name}_admin_passwd"
   username username
@@ -1003,6 +1008,23 @@ template "#{domains_dir}/#{domain_name}/bin/tensorflow_transform_graph.sh" do
   action :create
 end
 
+transform =  File.basename(node['hopsworks']['transform_graph'], ".tar.gz")
+
+bash 'transform_graph' do
+  user "root"
+  code <<-EOF
+    rm -rf tensorflow
+    rm -f #{node['hopsworks']['transform_graph']} 
+    wget #{node['hopsworks']['transform_graph_url']}
+    tar zxf #{node['hopsworks']['transform_graph']} 
+    rm -f #{node['hopsworks']['dir']}/tensorflow-hops-graph-#{node['tensorflow']['version']}
+    mv tensorflow #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']}
+    rm -f #{node['hopsworks']['dir']}/tensorflow
+    ln -s #{node['hopsworks']['dir']}/tensorflow-#{node['tensorflow']['version']} #{node['hopsworks']['dir']}/tensorflow
+    chown -R #{node['hopsworks']['user']}:#{node['hopsworks']['group']} tensorflow*
+    EOF
+end
+
 
 
 bash 'enable_sso' do
@@ -1071,9 +1093,10 @@ bash "pydoop" do
                  'HADOOP_HOME' => node['hops']['base_dir']})
     code <<-EOF
       set -e
-      pip install --no-cache-dir hdfscontents
+      # pip install --no-cache-dir --upgrade pydoop==2.0a2
+      pip install --no-cache-dir --upgrade hdfscontents
     EOF
-    not_if "python -c 'import pydoop'"
+#    not_if "python -c 'import pydoop'"
 end
 
 
@@ -1176,6 +1199,15 @@ when 'redhat', 'centos', 'fedora'
   end
 
 end
+
+
+  bash "pip_backports_workaround" do
+    user "root"
+    code <<-EOF
+    pip uninstall backports.functools_lru_cache
+    pip install backports.functools_lru_cache
+   EOF
+  end
 
 
 homedir = "/home/#{node['hopsworks']['user']}"
@@ -1375,6 +1407,11 @@ link "#{node['kagent']['certs_dir']}/cacerts.jks" do
   to "#{theDomain}/config/cacerts.jks"
 end
 
+#
+# Need to synchronize conda enviornments for newly joined or rejoining nodes.
+#
+package "rsync"
+
 
 homedir = node['hopsworks']['user'].eql?("root") ? "/root" : "/home/#{node['hopsworks']['user']}"
 Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
@@ -1382,13 +1419,74 @@ Chef::Log.info "Home dir is #{homedir}. Generating ssh keys..."
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
-  action :generate  
-end  
+  action :generate
+end
 
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
   cb_name "hopsworks"
-  cb_recipe "default"  
+  cb_recipe "default"
   action :return_publickey
 end  
+
+
+#
+# Rstudio
+#
+
+if node['rstudio']['enabled'].eql? "true"
+
+  case node['platform']
+  when 'debian', 'ubuntu'
+    package "r-base"
+
+    remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['deb']}" do
+      user node['glassfish']['user']
+      group node['glassfish']['group']
+      source node['download_url'] + "/#{node['rstudio']['deb']}"
+      mode 0755
+      action :create
+    end
+    
+    bash 'install_rstudio_debian' do
+      user "root"
+      code <<-EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      apt-get install gdebi-core -y
+      gdebi #{node['rstudio']['deb']}
+    EOF
+    end
+    
+  when 'redhat', 'centos', 'fedora'
+
+    remote_file "#{Chef::Config['file_cache_path']}/#{node['rstudio']['rpm']}" do
+      user node['glassfish']['user']
+      group node['glassfish']['group']
+      source node['download_url'] + "/#{node['rstudio']['rpm']}"
+      mode 0755
+      action :create
+    end
+
+    bash 'install_rstudio_rhel' do
+      user "root"
+      code <<-EOF
+      set -e
+      cd #{Chef::Config['file_cache_path']}
+      yum install --nogpgcheck #{node['rstudio']['rpm']} -y
+    EOF
+    end
+    
+  end   
+
+  bash 'disable_rstudio_systemd_daemons' do
+    user "root"
+    ignore_failure true
+    code <<-EOF
+      systemctl stop rstudio-server
+      systemctl disable rstudio-server
+    EOF
+  end
+
+end
