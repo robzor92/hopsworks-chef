@@ -2,11 +2,21 @@
 
 # conda search -c $1
 
-if [ $# -ne 1  ]; then
+if [[ $# -ne 2 ]]; then
  echo "incorrect usage"
+ echo "project host"
  exit 1
 fi
 
-PROJECT=$1
+CONDA_USER=<%= node['conda']['user'] %>
 
-<%= node['conda']['base_dir'] %>/bin/conda list -n ${PROJECT}
+PROJECT=$1
+HOST=$2
+
+HOSTNAME=$(hostname)
+
+if [[ ${HOST} -eq ${HOSTNAME} ]]; then
+  <%= node['conda']['base_dir'] %>/bin/conda list -n ${PROJECT}
+else
+  ssh ${CONDA_USER}@${HOST} <%= node['conda']['base_dir'] %>/bin/conda list -n ${PROJECT}
+fi
