@@ -23,6 +23,7 @@ cookbook 'kzookeeper', github: "logicalclocks/kzookeeper", branch: "master"
 cookbook 'kkafka', github: "logicalclocks/kafka-cookbook", branch: "master"
 cookbook 'elastic', github: "logicalclocks/elasticsearch-chef", branch: "master"
 
+
 cookbook 'hopslog', github: "logicalclocks/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "logicalclocks/hopsmonitor-chef", branch: "master"
 cookbook 'glassfish', github: "logicalclocks/chef-glassfish", branch: "master"
