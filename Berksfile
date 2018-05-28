@@ -31,7 +31,8 @@ cookbook 'ulimit', github: "logicalclocks/chef-ulimit", branch: "master"
 
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "master"
 
-cookbook 'elasticsearch', '~> 4.0.0'
+cookbook 'graphite', '~> 1.0.4'
+cookbook 'simple-logstash', '~> 0.2.4'
 
 cookbook 'compat_resource', '~> 12.19.0'
 cookbook 'authbind', '~> 0.1.10'
