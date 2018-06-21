@@ -4,12 +4,13 @@ INSERT INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_
 
 
 CREATE TABLE IF NOT EXISTS `tensorboard` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
   `pid` BIGINT NOT NULL,
-  `port` BIGINT NOT NULL,
+  `port` INT(11) DEFAULT NULL,
   `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `hdfs_logdir` VARCHAR(10000) NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
+  PRIMARY KEY (`project_id`,`team_member`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
