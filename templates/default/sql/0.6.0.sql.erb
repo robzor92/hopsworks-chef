@@ -1,7 +1,12 @@
 INSERT INTO `hopsworks`.`variables` VALUES ("application_certificate_validity_period", "<%= node['hopsworks']['application_certificate_validity_period'] %>");
 
+
 INSERT INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_expiration', '604800000');
 
+
+--
+--  TensorBoard visualization for experiments service
+--
 
 CREATE TABLE IF NOT EXISTS `tensorboard` (
   `project_id` INT(11) NOT NULL,
