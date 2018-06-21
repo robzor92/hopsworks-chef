@@ -1,3 +1,15 @@
 INSERT INTO `hopsworks`.`variables` VALUES ("application_certificate_validity_period", "<%= node['hopsworks']['application_certificate_validity_period'] %>");
 
 INSERT INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_expiration', '604800000');
+
+
+CREATE TABLE IF NOT EXISTS `tensorboard` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `team_member` VARCHAR(150) NOT NULL,
+  `pid` BIGINT NOT NULL,
+  `port` BIGINT NOT NULL,
+  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `hdfs_logdir` VARCHAR(10000) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
