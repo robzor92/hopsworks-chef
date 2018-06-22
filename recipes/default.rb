@@ -1323,6 +1323,14 @@ directory node['hopsworks']['staging_dir'] + "/serving"  do
   action :create
 end
 
+directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
+  owner node['hopsworks']['user']
+  group node['hopsworks']['group']
+  mode "0330"
+  action :create
+end
+
+
 kagent_keys "#{homedir}" do
   cb_user node['hopsworks']['user']
   cb_group node['hopsworks']['group']
