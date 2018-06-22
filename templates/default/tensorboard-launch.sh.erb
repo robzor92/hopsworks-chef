@@ -1,0 +1,35 @@
+#!/bin/bash
+hdfsUser hdfsLogdir tensorBoardDir port anacondaEnvironmentPath
+
+HDFS_USER=$1
+HDFS_LOGDIR=$2
+TENSORBOARD_DIR=$3
+PORT=$4
+ANACONDA_ENVIRONMENT_PATH=$5
+
+help() {
+    echo ""
+    echo "usage: $0 HDFS_USER HDFS_LOGDIR TENSORBOARD_DIR PORT ANACONDA_ENVIRONMENT_PATH"
+    echo ""
+    exit 1
+}
+
+if [ $# -ne 5 ]; then
+  help
+fi
+
+if [ ! -d $TENSORBOARD_DIR ] ; then
+    echo "Secret dir does not exist: $SECRET_DIR"
+    exit 2
+fi
+
+cd $TENSORBOARD_DIR
+
+# /srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
+
+export HADOOP_USER_NAME=$HDFS_USER
+
+setsid $ANACONDA_ENVIRONMENT_PATH/bin/tensorboard --port=$PORT --logdir=${HDFS_LOGDIR} </dev/zero &> $LOGFILE  &
+echo $! > $PID_FILE
+
+exit $?
