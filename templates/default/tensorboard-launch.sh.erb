@@ -25,11 +25,12 @@ fi
 
 cd $TENSORBOARD_DIR
 
-# /srv/hops/hadoop/bin/hdfs dfs -copyToLocal ${TFSERVING_HDFS_DIR}/${MODEL_NAME} ${MODELDIR}
+LOGFILE=${TENSORBOARD_DIR}/${PORT}.log
+PID_FILE=${TENSORBOARD_DIR}/${PORT}.pid
 
 export HADOOP_USER_NAME=$HDFS_USER
 
-setsid $ANACONDA_ENVIRONMENT_PATH/bin/tensorboard --port=$PORT --logdir=${HDFS_LOGDIR} </dev/zero &> $LOGFILE  &
+setsid $ANACONDA_ENVIRONMENT_PATH/bin/tensorboard --port=${PORT} --logdir=${HDFS_LOGDIR} </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
 
 exit $?
