@@ -987,6 +987,14 @@ link "crl-symlink" do
   group node['glassfish']['group']
 end
 
+template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
+  source "tensorboard.sh.erb"
+  owner node['glassfish']['user']
+  group node['glassfish']['group']
+  mode 0750
+  action :create
+end
+
 template "#{domains_dir}/#{domain_name}/bin/condasearch.sh" do
   source "condasearch.sh.erb"
   owner node['glassfish']['user']
