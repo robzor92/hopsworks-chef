@@ -6,6 +6,7 @@ HDFS_LOGDIR=$2
 TENSORBOARD_DIR=$3
 PORT=$4
 ANACONDA_ENVIRONMENT_PATH=$5
+HADOOP_HOME=$6
 
 help() {
     echo ""
@@ -14,7 +15,7 @@ help() {
     exit 1
 }
 
-if [ $# -ne 5 ]; then
+if [ $# -ne 6 ]; then
   help
 fi
 
@@ -29,6 +30,8 @@ LOGFILE=${TENSORBOARD_DIR}/${PORT}.log
 PID_FILE=${TENSORBOARD_DIR}/${PORT}.pid
 
 export HADOOP_USER_NAME=$HDFS_USER
+export HADOOP_HDFS_HOME=${HADOOP_HOME}/etc/hadoop
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
 
 setsid $ANACONDA_ENVIRONMENT_PATH/bin/tensorboard --port=${PORT} --logdir=${HDFS_LOGDIR} </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
