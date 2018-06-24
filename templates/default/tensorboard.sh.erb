@@ -57,7 +57,7 @@ elif [ "$1" == "ping" ] ; then
     if [ $# -ne 2 ]; then
     	help
     fi
-    sudo ps -ef | grep -v 'grep' | grep -i tensorboard | grep $2
+    sudo ps -ef | grep -v '\s\+\ping\s\+\' | grep -i tensorboard | grep $2
 fi
 
 exit $?
