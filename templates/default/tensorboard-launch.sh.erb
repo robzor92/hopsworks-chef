@@ -32,6 +32,8 @@ PID_FILE=${TENSORBOARD_DIR}/${PORT}.pid
 export HADOOP_USER_NAME=$HDFS_USER
 export HADOOP_HDFS_HOME=${HADOOP_HOME}/etc/hadoop
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
+export LC_ALL=C
+export CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath --glob)
 
 setsid $ANACONDA_ENVIRONMENT_PATH/bin/tensorboard --port=${PORT} --logdir=${HDFS_LOGDIR} </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE
