@@ -12,8 +12,6 @@ help() {
     exit 1
 }
 
-TFSERVING_USER=<%= node['tfserving']['user'] %>
-TFSERVING_GROUP=<%= node['tfserving']['group'] %>
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
@@ -58,6 +56,9 @@ elif [ "$1" == "ping" ] ; then
     	help
     fi
     sudo ps -ef | grep -v 'tensorboard.sh' | grep -i tensorboard | grep $2
+fi
+else
+  help
 fi
 
 exit $?
