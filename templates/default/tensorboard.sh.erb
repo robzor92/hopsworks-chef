@@ -2,8 +2,7 @@
 
 # This script allows Hopsworks to start/kill/ping (check if alive) a TensorBoard
 # There will be 1 TensorBoard process per ProjectUser at max.
-# This script can be run by hopsworks (running as user 'glassfish') as a sudo command whereupon
-# it changes user to 'tfserving' to run the command as user 'tfserving'.
+# This script can be run by hopsworks (running as user 'glassfish') as a sudo command
 #
 
 help() {
@@ -32,7 +31,7 @@ if [ "$1" == "kill" ] ; then
       help
     fi
 
-    PID=`ps aux | grep tensorboard | grep $2'`
+    PID=`ps aux | grep tensorboard | grep $2`
     if [ "$PID" != "" ] ; then
  	    kill -9 $2 > /dev/null 2>&1
     fi
@@ -41,7 +40,7 @@ if [ "$1" == "kill" ] ; then
 
 elif [ "$1" == "start" ] ; then
 
-    if [ $# -ne 7 ]; then
+    if [ $# -ne 6 ]; then
 	help
     fi
 
