@@ -23,3 +23,6 @@ CREATE TABLE IF NOT EXISTS `tensorboard` (
   FOREIGN KEY (`team_member`) REFERENCES `users` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION,
   FOREIGN KEY (`hdfs_user_id`) REFERENCES `hops`.`hdfs_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+INSERT INTO `hopsworks`.`variables` VALUES ("tensorboard_kill_rotation_interval", "<%= node['hopsworks']['tensorboard_kill_rotation_interval'] %>");
+INSERT INTO `hopsworks`.`variables` VALUES ("tensorboard_max_last_accessed", "<%= node['hopsworks']['tensorboard_max_last_accessed'] %>");

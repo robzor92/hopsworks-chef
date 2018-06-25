@@ -86,6 +86,11 @@ default['hopsworks']['cert_mater_delay']         = "3m"
 default['hopsworks']['service_key_rotation_interval'] = "2d"
 default['hopsworks']['application_certificate_validity_period'] = "3d"
 
+#Periodic timer for killing old TensorBoards
+default['hopsworks']['tensorboard_kill_rotation_interval'] = "4m"
+#Time in milliseconds to wait after a TensorBoard is requested before considering it old (and should be killed)
+default['hopsworks']['tensorboard_max_last_accessed'] = 1200000
+
 default['hopsworks']['mysql_connector_url']      = "http://snurran.sics.se/hops/mysql-connector-java-5.1.29-bin.jar"
 
 default['hopsworks']['cert']['cn']                  = "sics.se"
