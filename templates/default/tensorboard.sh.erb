@@ -56,7 +56,6 @@ elif [ "$1" == "ping" ] ; then
     	help
     fi
     sudo ps -ef | grep -v 'tensorboard.sh' | grep -i tensorboard | grep $2
-fi
 else
   help
 fi

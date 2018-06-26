@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS `tensorboard` (
   `endpoint` VARCHAR(100) NOT NULL,
   `elastic_id` VARCHAR(100) NOT NULL,
   `pid` BIGINT DEFAULT NULL,
-  `port` INT(11) NOT NULL,
   `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `hdfs_logdir` VARCHAR(10000) NOT NULL,
   PRIMARY KEY (`project_id`,`team_member`),
