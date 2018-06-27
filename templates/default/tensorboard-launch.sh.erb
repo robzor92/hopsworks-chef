@@ -7,6 +7,7 @@ TENSORBOARD_DIR=$3
 PORT=$4
 ANACONDA_ENVIRONMENT_PATH=$5
 HADOOP_HOME=$6
+HADOOP_VERSION=$7
 
 help() {
     echo ""
@@ -15,7 +16,7 @@ help() {
     exit 1
 }
 
-if [ $# -ne 6 ]; then
+if [ $# -ne 7 ]; then
   help
 fi
 
@@ -33,7 +34,7 @@ export HADOOP_USER_NAME=$HDFS_USER
 export HADOOP_HDFS_HOME=${HADOOP_HOME}/etc/hadoop
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HADOOP_HOME}/lib/native
 export LC_ALL=C
-export CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath --glob)
+export CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath --glob):${HADOOP_HOME}/share/hadoop/hdfs/hadoop-hdfs-${HADOOP_VERSION}.jar
 
 setsid $ANACONDA_ENVIRONMENT_PATH/bin/tensorboard --port=${PORT} --logdir=${HDFS_LOGDIR} </dev/zero &> $LOGFILE  &
 echo $! > $PID_FILE

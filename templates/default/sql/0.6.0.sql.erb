@@ -11,11 +11,11 @@ INSERT INTO `hopsworks`.`variables` (`id`, `value`) VALUES ('elastic_logs_index_
 CREATE TABLE IF NOT EXISTS `tensorboard` (
   `project_id` INT(11) NOT NULL,
   `team_member` VARCHAR(150) NOT NULL,
-  `pid` BIGINT NOT NULL,
   `hdfs_user_id` int(11) NOT NULL,
   `endpoint` VARCHAR(100) NOT NULL,
   `elastic_id` VARCHAR(100) NOT NULL,
-  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `pid` BIGINT NOT NULL,
+  `last_accessed` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `hdfs_logdir` VARCHAR(10000) NOT NULL,
   PRIMARY KEY (`project_id`,`team_member`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
