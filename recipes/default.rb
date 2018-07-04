@@ -1342,7 +1342,7 @@ end
 directory node['hopsworks']['staging_dir'] + "/tensorboard"  do
   owner node['conda']['user']
   group node['hopsworks']['group']
-  mode "0330"
+  mode "0770"
   action :create
 end
 
