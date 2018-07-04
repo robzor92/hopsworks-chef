@@ -13,6 +13,7 @@ help() {
 }
 
 HOPSWORKS_USER=<%= node['hopsworks']['user'] %>
+ANACONDA_USER=<%= node['conda']['user'] %>
 DOMAINS_DIR=<%= node['glassfish']['domains_dir'] %>
 HADOOP_HOME=<%= node['hops']['base_dir'] %>
 
@@ -48,7 +49,7 @@ elif [ "$1" == "start" ] ; then
         exit 1
     fi
 
-    ${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7
+    su ${ANACONDA_USER} -c "${DOMAINS_DIR}/domain1/bin/tensorboard-launch.sh $2 $3 $4 $5 $6 $HADOOP_HOME $7"
 
 elif [ "$1" == "ping" ] ; then
 
