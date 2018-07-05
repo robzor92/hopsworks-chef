@@ -990,7 +990,7 @@ end
 template "#{domains_dir}/#{domain_name}/bin/tensorboard.sh" do
   source "tensorboard.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']
+  group node['conda']['group']
   mode 0750
   action :create
 end
@@ -998,7 +998,7 @@ end
 template "#{domains_dir}/#{domain_name}/bin/tensorboard-launch.sh" do
   source "tensorboard-launch.sh.erb"
   owner node['glassfish']['user']
-  group node['glassfish']['group']
+  group node['conda']['group']
   mode 0750
   action :create
 end
