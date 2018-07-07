@@ -55,6 +55,7 @@ elif [ "$1" == "start" ] ; then
     fi
 
     sudo chown $ANACONDA_USER:$HOPSWORKS_USER $4
+    sudo chmod 770 $4
     cd $4
 
     echo > $5.pid
