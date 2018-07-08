@@ -54,6 +54,12 @@ elif [ "$1" == "start" ] ; then
         exit 2
     fi
 
+    sudo netstat -tulpn | grep :$5
+    if [ $? -eq 0 ] ; then
+        echo "Port is allocated already"
+        exit 1
+    fi
+
     sudo chown $ANACONDA_USER:$HOPSWORKS_USER $4
     sudo chmod 770 $4
     cd $4
