@@ -14,14 +14,14 @@ cookbook 'flink', github: "logicalclocks/flink-chef", branch: "master"
 cookbook 'zeppelin', github: "logicalclocks/zeppelin-chef", branch: "master"
 cookbook 'livy', github: "logicalclocks/livy-chef", branch: "master"
 cookbook 'drelephant', github: "logicalclocks/dr-elephant-chef", branch: "master"
-cookbook 'tensorflow', github: "logicalclocks/tensorflow-chef", branch: "master"
+cookbook 'tensorflow', github: "robzor92/tensorflow-chef", branch: "HOPSWORKS-532"
 
 cookbook 'epipe', github: "logicalclocks/epipe-chef", branch: "master"
 cookbook 'dela', github: "logicalclocks/dela-chef", branch: "master"
 
 cookbook 'kzookeeper', github: "logicalclocks/kzookeeper", branch: "master"
 cookbook 'kkafka', github: "logicalclocks/kafka-cookbook", branch: "master"
-cookbook 'elastic', github: "logicalclocks/elasticsearch-chef", branch: "master"
+cookbook 'elastic', github: "robzor92/elasticsearch-chef", branch: "HOPSWORKS-532-rebased"
 
 cookbook 'hopslog', github: "logicalclocks/hopslog-chef", branch: "master"
 cookbook 'hopsmonitor', github: "logicalclocks/hopsmonitor-chef", branch: "master"
