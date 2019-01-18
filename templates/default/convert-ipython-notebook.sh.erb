@@ -52,7 +52,11 @@ fi
 if [ $? -ne 0 ] ; then
     echo "Problem converting ipython notebook to python program: $1"
     exit 6
-fi    
+fi
+
+# Prepend getting SparkSession as code in Jupyter expects, currently a SparkSession object named 'spark'
+import_spark_str = "from pyspark.sql import SparkSession\nspark = SparkSession.builder.getOrCreate()\n"
+echo -e "${import_spark_str}$(cat ${filename})" > "${filename}"
 
 # Over-write any old version up on hdfs
 <%= node['hops']['base_dir'] %>/bin/hdfs dfs -copyFromLocal -f "${base}".py "$4"
