@@ -2,9 +2,9 @@
 
 # conda list [-c $1]
 
-if [[ $# -ne 6 ]]; then
+if [[ $# -ne 7 ]]; then
   echo "incorrect usage"
-  echo "exportdir project host environment user"
+  echo "localexportdir project host environment user projectrelativedir"
   exit 1
 fi
 
@@ -17,7 +17,7 @@ CONDA_ENV_NAME=$3
 HOST=$4
 ENVIRONMENTFILE=$5
 IMPERSONATED_USERNAME=$6
-PROJECT_RELATIVE_EXPORT_DIR=$1
+PROJECT_RELATIVE_EXPORT_DIR=$7
 
 if [ ! -d "${LOCAL_EXPORT_DIR}" ] ; then
     exit 1
