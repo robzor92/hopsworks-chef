@@ -792,7 +792,6 @@ template "/etc/sudoers.d/glassfish" do
               :jupyter =>  "#{theDomain}/bin/jupyter.sh",
               :tfserving =>  "#{theDomain}/bin/tfserving.sh",
               :sklearn_serving =>  "#{theDomain}/bin/sklearn_serving.sh",
-              :conda_export =>  "#{theDomain}/bin/condaexport.sh",
               :tensorboard =>  "#{theDomain}/bin/tensorboard.sh",
               :jupyter_cleanup =>  "#{theDomain}/bin/jupyter-project-cleanup.sh",
               :jupyter_kernel =>  "#{theDomain}/bin/jupyter-install-kernel.sh",
