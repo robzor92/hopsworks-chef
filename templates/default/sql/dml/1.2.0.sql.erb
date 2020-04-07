@@ -10,3 +10,4 @@ REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_size_limit", "<%= node['
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_count", "<%= node['hopsworks']['audit_log_count'] %>");
 REPLACE INTO `hopsworks`.`variables` VALUES ("audit_log_file_type", "<%= node['hopsworks']['audit_log_file_type'] %>");
 REPLACE INTO variables VALUES ("provenance_cleaner_period", "<%= node['hopsworks']['provenance']['cleaner']['period'] %>");
+REPLACE INTO `hopsworks`.`tf_lib_mapping` VALUES ("2.2.0", "10.1", "7.6.0.64", "2.3");
