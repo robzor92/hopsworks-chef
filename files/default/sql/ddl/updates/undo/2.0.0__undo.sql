@@ -1,0 +1,1 @@
+ALTER TABLE `hopsworks`.`jobs` DROP COLUMN `default_args`;

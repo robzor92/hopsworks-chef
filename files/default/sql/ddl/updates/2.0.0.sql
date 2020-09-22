@@ -1,0 +1,1 @@
+ALTER TABLE `hopsworks`.`jobs` ADD COLUMN `default_args` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL;

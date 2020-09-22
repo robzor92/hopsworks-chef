@@ -522,6 +522,7 @@ CREATE TABLE `jobs` (
   `creator` varchar(150) COLLATE latin1_general_cs NOT NULL,
   `type` varchar(128) COLLATE latin1_general_cs NOT NULL,
   `json_config` varchar(12500) COLLATE latin1_general_cs NOT NULL,
+  `default_args` varchar(1000) COLLATE latin1_general_cs DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_project_idx` (`name`,`project_id`),
   KEY `project_id` (`project_id`),
