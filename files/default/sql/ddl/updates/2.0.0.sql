@@ -85,6 +85,27 @@ ALTER TABLE `hopsworks`.`on_demand_feature` DROP COLUMN `training_dataset_id`;
 
 ALTER TABLE `hopsworks`.`training_dataset` ADD COLUMN `query` TINYINT(1) NOT NULL DEFAULT '0';
 
+CREATE TABLE IF NOT EXISTS `validation_rule` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `predicate` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  `value_type` varchar(45) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_validation_rule` (`name`,`predicate`,`value_type`)
+) ENGINE=ndbcluster AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
+CREATE TABLE IF NOT EXISTS `feature_groups_rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature_group_id` int(11) NOT NULL,
+  `rule_id` int(11) NOT NULL,
+  `assertions` varchar(13000) COLLATE latin1_general_cs DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `unique_fg_rules` (`feature_group_id`,`rule_id`),
+  KEY `fk_feature_group_rules_2_idx` (`rule_id`),
+  CONSTRAINT `fk_fg_rules_to_rules` FOREIGN KEY (`rule_id`) REFERENCES `validation_rule` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_fg_rules_to_fg` FOREIGN KEY (`feature_group_id`) REFERENCES `feature_group` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=ndbcluster AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+
 /*
 The following changes are related to Migration to NDB8
 The following changes are implemented using procedures 
