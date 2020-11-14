@@ -1019,6 +1019,7 @@ CREATE TABLE `project` (
   `logs` tinyint(1) DEFAULT '0',
   `deleted` tinyint(1) DEFAULT '0',
   `python_version` varchar(25) COLLATE latin1_general_cs DEFAULT NULL,
+  `python_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
   `description` varchar(2000) COLLATE latin1_general_cs DEFAULT NULL,
   `payment_type` varchar(255) COLLATE latin1_general_cs NOT NULL DEFAULT 'PREPAID',
   `last_quota_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
