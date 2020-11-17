@@ -71,4 +71,5 @@ ALTER TABLE `hopsworks`.`training_dataset_feature` DROP COLUMN `label`;
 
 ALTER TABLE `hopsworks`.`project` DROP COLUMN `python_conflicts`;
 
+ALTER TABLE `hopsworks`.`jupyter_project` DROP COLUMN `python_conflicts`;
 

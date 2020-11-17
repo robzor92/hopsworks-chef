@@ -550,6 +550,7 @@ CREATE TABLE `jupyter_project` (
   `secret` varchar(64) COLLATE latin1_general_cs NOT NULL,
   `cid` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
+  `python_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`port`),
   UNIQUE KEY `unique_hdfs_user` (`hdfs_user_id`),
   KEY `project_id` (`project_id`),
