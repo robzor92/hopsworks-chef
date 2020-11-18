@@ -550,7 +550,6 @@ CREATE TABLE `jupyter_project` (
   `secret` varchar(64) COLLATE latin1_general_cs NOT NULL,
   `cid` varchar(255) COLLATE latin1_general_cs NOT NULL,
   `project_id` int(11) NOT NULL,
-  `python_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`port`),
   UNIQUE KEY `unique_hdfs_user` (`hdfs_user_id`),
   KEY `project_id` (`project_id`),
@@ -1016,22 +1015,39 @@ CREATE TABLE `project` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `retention_period` date DEFAULT NULL,
   `archived` tinyint(1) DEFAULT '0',
-  `conda` tinyint(1) DEFAULT '0',
   `logs` tinyint(1) DEFAULT '0',
   `deleted` tinyint(1) DEFAULT '0',
-  `python_version` varchar(25) COLLATE latin1_general_cs DEFAULT NULL,
   `description` varchar(2000) COLLATE latin1_general_cs DEFAULT NULL,
   `payment_type` varchar(255) COLLATE latin1_general_cs NOT NULL DEFAULT 'PREPAID',
   `last_quota_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `kafka_max_num_topics` int(11) NOT NULL DEFAULT '100',
   `docker_image` varchar(255) COLLATE latin1_general_cs DEFAULT NULL,
-  `python_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
+  `python_env_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `projectname` (`projectname`),
   UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
   KEY `user_idx` (`username`),
   CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_149_289` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `FK_362_309` FOREIGN KEY (`python_env_id`) REFERENCES `python_environment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `python_environment`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `python_environment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
+  `python_version` varchar(25) COLLATE latin1_general_cs NOT NULL,
+  `python_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
+  `jupyter_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
+  `conflicts` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL,
+  UNIQUE KEY `project_env` (`project_id`,`python_version`),
+  PRIMARY KEY (`id`)
 ) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
