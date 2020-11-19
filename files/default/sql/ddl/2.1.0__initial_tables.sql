@@ -1028,8 +1028,8 @@ CREATE TABLE `project` (
   UNIQUE KEY `inode_pid` (`inode_pid`,`inode_name`,`partition_id`),
   KEY `user_idx` (`username`),
   CONSTRAINT `FK_262_290` FOREIGN KEY (`username`) REFERENCES `users` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_149_289` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-  CONSTRAINT `FK_362_309` FOREIGN KEY (`python_env_id`) REFERENCES `python_environment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `FK_149_289` FOREIGN KEY (`inode_pid`,`inode_name`,`partition_id`) REFERENCES `hops`.`hdfs_inodes` (`parent_id`,`name`,`partition_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_362_309` FOREIGN KEY (`python_env_id`) REFERENCES `python_environment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1047,7 +1047,8 @@ CREATE TABLE `python_environment` (
   `jupyter_conflicts` TINYINT(1) NOT NULL DEFAULT '0',
   `conflicts` VARCHAR(10000) COLLATE latin1_general_cs DEFAULT NULL,
   UNIQUE KEY `project_env` (`project_id`,`python_version`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_362_312` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=ndbcluster AUTO_INCREMENT=119 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
