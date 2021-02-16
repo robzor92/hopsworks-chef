@@ -67,3 +67,5 @@ ALTER TABLE `hopsworks`.`feature_group_commit` ADD COLUMN `validation_id` int(11
 ALTER TABLE `hopsworks`.`oauth_client` 
 ADD COLUMN `end_session_endpoint` VARCHAR(1024) DEFAULT NULL,
 ADD COLUMN `logout_redirect_param` VARCHAR(45) DEFAULT NULL;
+
+ALTER TABLE `hopsworks`.`python_dep` CHANGE COLUMN `version` `version` varchar(128) COLLATE latin1_general_cs DEFAULT NULL;

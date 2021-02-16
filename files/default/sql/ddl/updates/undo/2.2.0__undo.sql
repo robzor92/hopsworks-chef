@@ -61,3 +61,5 @@ ALTER TABLE `hopsworks`.`feature_group` DROP COLUMN `validation_type`;
 ALTER TABLE `hopsworks`.`oauth_client` 
 DROP COLUMN `end_session_endpoint`,
 DROP COLUMN `logout_redirect_param`;
+
+ALTER TABLE `hopsworks`.`python_dep` CHANGE COLUMN `version` `version` varchar(128) COLLATE latin1_general_cs NOT NULL;
